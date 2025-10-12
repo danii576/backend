@@ -1,35 +1,27 @@
-import express from "express";
+// src/server.ts
+import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { initDB } from "./config/db.js";
-import adminRoutes from "./routes/admin.routes.js";
-import reportRoutes from "./routes/report.routes.js";
+import reportRoutes from "./routes/report.routes";
+import newsRoutes from "./routes/news.routes";
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const startServer = async () => {
-  try {
-    await initDB(); // Initialize database connection
+// Routes
+app.use("/api/reports", reportRoutes);
+app.use("/api/news", newsRoutes);
 
-    // Mount routes
-    app.use("/admin", adminRoutes);
-    app.use("/api/reports", reportRoutes);
+// Test endpoint
+app.get("/api/test", (_req: Request, res: Response) => {
+  res.json({ success: true, message: "Server running and DB connected!" });
+});
 
-    // Test route
-    app.get("/api/test-db", (_req, res) => {
-      res.json({ success: true, message: "Server running and DB connected!" });
-    });
-
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
-  } catch (err: any) {
-    console.error("❌ Failed to start server:", err.message);
-    process.exit(1);
-  }
-};
-
-startServer();
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});

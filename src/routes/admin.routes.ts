@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { loginAdminController } from "../controllers/admin.controller";
+import { AdminController } from "../controllers/admin.controller";
 
 const router = Router();
+const controller = new AdminController();
 
-router.post("/login", loginAdminController);
+// Public routes
+router.post("/login", controller.login.bind(controller));
+router.post("/register", controller.register.bind(controller)); // optional
 
 export default router;

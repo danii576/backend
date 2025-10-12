@@ -1,22 +1,26 @@
-// src/controllers/admin.controller.ts
-import type { Request, Response } from "express";
-import { loginAdminService } from "../services/admin.service";
+import { Request, Response } from "express";
+import { AdminService } from "../services/admin.service";
 
-export const loginAdminController = async (req: Request, res: Response) => {
-  try {
-    const { user_name, password } = req.body;
-    if (!user_name || !password) {
-      return res.status(400).json({ message: "user_name and password are required" });
-    }
+const adminService = new AdminService();
 
-    const admin = await loginAdminService(user_name, password);
-    if (admin) {
-      res.status(200).json({ message: "Login successful", admin });
-    } else {
-      res.status(401).json({ message: "Invalid credentials" });
+export class AdminController {
+  async login(req: Request, res: Response) {
+    try {
+      const { user_name, password } = req.body;
+      const token = await adminService.login(user_name, password);
+      res.status(200).json(token);
+    } catch (error) {
+      res.status(401).json({ message: (error as Error).message });
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Login failed" });
   }
-};
+
+  async register(req: Request, res: Response) {
+    try {
+      const { user_name, password } = req.body;
+      const admin = await adminService.register(user_name, password);
+      res.status(201).json(admin);
+    } catch (error) {
+      res.status(400).json({ message: (error as Error).message });
+    }
+  }
+}

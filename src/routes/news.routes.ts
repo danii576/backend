@@ -10,10 +10,10 @@ import {
 
 const router = Router();
 
-router.get('/news', getAllNews);
-router.get('/news/:id', getNewsById);
-router.post('/news', createNews);
-router.put('/news/:id', updateNews);
-router.delete('/news/:id', deleteNews);
+router.get('/', getAllNews);         // ← changed from '/news' to '/'
+router.get('/:id', getNewsById);     // ← changed from '/news/:id'
+router.post('/', createNews);        // ← changed from '/news'
+router.put('/:id', updateNews);
+router.delete('/:id', deleteNews);
 
 export default router;
